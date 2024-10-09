@@ -1,20 +1,28 @@
 const http = require('http');
 
 const requestListener = (request, response) =>{
-    response.setHeader('Content-Type', 'text/html');
-    response.statusCode = 200;
-
+    response.setHeader('Content-Type', 'application/json');
+    response.setHeader('X-Powered-By', 'NodeJS');
     const { method, url } = request;
     
     if(url === '/'){
         if(method === 'GET') {
-            response.end(`<h1>Ini di 'Home page'! </h1>`);
+            response.statusCode = 200;
+            response.end(JSON.stringify({
+                message: `Ini di 'Home page'! `,
+            }));
         }else{
-            response.end(`<h1>NGUAWOR!!! gunakan request GET, jangan gunakan ${method} request! </h1>`);
+            response.statusCode = 400;
+            response.end(JSON.stringify({
+                message: `NGUAWOR!!! gunakan request GET, jangan gunakan ${method} request! `,
+            }));
         }
     }else if(url === '/about'){
         if(method === 'GET') {
-            response.end(`<h1>Ini di 'Halaman About'! </h1>`);
+            response.statusCode = 200;
+            response.end(JSON.stringify({
+                message: `Ini di 'Halaman About'! `,
+            }));
         }else if(method === 'POST'){
             let body = [];
  
@@ -25,41 +33,24 @@ const requestListener = (request, response) =>{
             request.on('end', () => {
               body = Buffer.concat(body).toString();
               const {name} = JSON.parse(body);
-              response.end(`<h1>Halo, ${name}! Ini adalah halaman about</h1>`);
+              response.statusCode = 200;
+              response.end(JSON.stringify({
+                message: `Halo, ${name}! Ini adalah halaman about`,
+            }));
             });
         }
         else{
-        response.end(`<h1>NGUAWOR!!! This page can't be accessed by ${method} Request</h1>`);
+        response.statusCode = 400;
+        response.end(JSON.stringify({
+            message: `NGUAWOR!!! This page can't be accessed by ${method} Request`,
+        }));
         }
     }else{
-        response.end(`<h1>halaman tidak ditemukan</h1>`);
+        response.statusCode = 404;
+        response.end(JSON.stringify({
+            message: 'Halaman tidak ditemukan!',
+        }));
     }
-    
-    // if(method === 'GET') {
-    //     response.end('<h1>hEllo!</h1>');
-    // }
- 
-    // if(method === 'POST') {
-    //     let body=[];
-        
-    //     request.on('data', (chunk) => {
-    //         body.push(chunk);
-    //     });
-
-    //     request.on('end', ()=> {
-    //         body = Buffer.concat(body).toString();
-    //         const {name} = JSON.parse(body);
-    //         response.end(`<h1>Hai, ${name}! </h1>`);
-    //     });
-    // }
-
-    // if(method === 'PUT') {
-    //     response.end('<h1>Bonjour!</h1>');
-    // }
-
-    // if(method === 'DELETE') {
-    //     response.end('<h1>Salam!</h1>');
-    // }
 
 }
 
